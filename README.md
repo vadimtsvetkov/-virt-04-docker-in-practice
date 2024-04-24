@@ -25,8 +25,60 @@ CMD ["python", "main.py"]
 
 - ```db```. image=mysql:8. Контейнер должен работать в bridge-сети с названием ```backend``` и иметь фиксированный ipv4-адрес ```172.20.0.10```. Явно перезапуск сервиса в случае ошибок. Передайте необходимые ENV-переменные для создания: пароля root пользователя, создания базы данных, пользователя и пароля для web-приложения.Обязательно используйте уже существующий .env file для назначения секретных ENV-переменных!
 
-2. Запустите проект локально с помощью docker compose , добейтесь его стабильной работы: команда ```curl -L http://127.0.0.1:8090``` должна возвращать в качестве ответа время и локальный IP-адрес. Если сервисы не стартуют воспользуйтесь командами: ```docker ps -a ``` и ```docker logs <container_name>``` 
+```compose.yaml```
+```
+version: '3.7'                              
+include:                                    
+  - proxy.yaml                              
+                                            
+services:                                   
+                                            
+  db:                                       
+    image: mysql:8                          
+    command: --default-authentication-plugin
+    restart: on-failure                          
+    environment:                            
+      MYSQL_ROOT_PASSWORD: 12345            
+      MYSQL_DATABASE: db1                   
+      MYSQL_USER: user                      
+      MYSQL_PASSWORD: 12345         
+    volumes:                                
+      - ./docker_volumes/mysql:/var/lib/mysq
+    networks:                               
+      backend:                              
+        ipv4_address: 172.20.0.10           
+                                            
+  web:                                      
+    build:                                  
+          dockerfile: Dockerfile.python     
+    restart: on-failure                     
+    environment:                            
+      - DB_HOST=172.20.0.10                 
+      - DB_TABLE=requests                   
+      - DB_USER=root                        
+      - DB_NAME=db1                         
+      - DB_PASSWORD=12345                   
+    depends_on:                             
+      - db                                  
+    ports:                                  
+      - 5000:5000                           
+    networks:                               
+      backend:                              
+        ipv4_address: 172.20.0.5            
+                                            
+networks:                                   
+  backend:                                  
+    driver: bridge                          
+    ipam:                                   
+      config:                               
+      - subnet: 172.20.0.0/24
+```
+2. Запустите проект локально с помощью docker compose , добейтесь его стабильной работы: команда ```curl -L http://127.0.0.1:8090``` должна возвращать в качестве ответа время и локальный IP-адрес. Если сервисы не стартуют воспользуйтесь командами: ```docker ps -a ``` и ```docker logs <container_name>```
+
+![docker](https://github.com/vadimtsvetkov/-virt-04-docker-in-practice/blob/main/screenshots/Screenshot_2.png)
 
 5. Подключитесь к БД mysql с помощью команды ```docker exec <имя_контейнера> mysql -uroot -p<пароль root-пользователя>``` . Введите последовательно команды (не забываем в конце символ ; ): ```show databases; use <имя вашей базы данных(по-умолчанию example)>; show tables; SELECT * from requests LIMIT 10;```.
 
 6. Остановите проект. В качестве ответа приложите скриншот sql-запроса.
+
+![docker](https://github.com/vadimtsvetkov/-virt-04-docker-in-practice/blob/main/screenshots/Screenshot_3.png)
