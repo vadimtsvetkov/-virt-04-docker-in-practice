@@ -110,5 +110,14 @@ pwd
 sudo docker compose -f compose.yaml up
 ```
 ```https://github.com/vadimtsvetkov/shvirtd-example-python```
-
+## Задача 6
+Скачайте docker образ ```hashicorp/terraform:latest``` и скопируйте бинарный файл ```/bin/terraform``` на свою локальную машину, используя dive и docker save.
+Предоставьте скриншоты  действий .
+![docker](https://github.com/vadimtsvetkov/-virt-04-docker-in-practice/blob/main/screenshots/Screenshot_6.png)
+![docker](https://github.com/vadimtsvetkov/-virt-04-docker-in-practice/blob/main/screenshots/Screenshot_7.png)
+![docker](https://github.com/vadimtsvetkov/-virt-04-docker-in-practice/blob/main/screenshots/Screenshot_8.png)
+## Задача 6.1
+Добейтесь аналогичного результата, используя docker cp.  
+Предоставьте скриншоты  действий .
+![docker](https://github.com/vadimtsvetkov/-virt-04-docker-in-practice/blob/main/screenshots/Screenshot_9.png)
 
