@@ -82,3 +82,33 @@ networks:
 6. Остановите проект. В качестве ответа приложите скриншот sql-запроса.
 
 ![docker](https://github.com/vadimtsvetkov/-virt-04-docker-in-practice/blob/main/screenshots/Screenshot_3.png)
+
+## Задача 4
+1. Запустите в Yandex Cloud ВМ (вам хватит 2 Гб Ram).
+2. Подключитесь к Вм по ssh и установите docker.
+3. Напишите bash-скрипт, который скачает ваш fork-репозиторий в каталог /opt и запустит проект целиком.
+4. Зайдите на сайт проверки http подключений, например(или аналогичный): ```https://check-host.net/check-http``` и запустите проверку вашего сервиса ```http://<внешний_IP-адрес_вашей_ВМ>:8090```. Таким образом трафик будет направлен в ingress-proxy.
+![docker](https://github.com/vadimtsvetkov/-virt-04-docker-in-practice/blob/main/screenshots/Screenshot_4.png)
+6. (Необязательная часть) Дополнительно настройте remote ssh context к вашему серверу. Отобразите список контекстов и результат удаленного выполнения ```docker ps -a```
+7. В качестве ответа повторите  sql-запрос и приложите скриншот с данного сервера, bash-скрипт и ссылку на fork-репозиторий.
+![docker](https://github.com/vadimtsvetkov/-virt-04-docker-in-practice/blob/main/screenshots/Screenshot_5.png)
+
+```
+#!/bin/bash
+
+    sudo apt install -y docker docker-compose-v2
+
+if [ ! -d "/opt/shvirtd-example-python" ] ; then
+    sudo git clone https://github.com/vadimtsvetkov/shvirtd-example-python /opt/shvirtd-example-python
+else
+    cd /opt/shvirtd-example-python
+    sudo git pull
+fi
+
+pwd
+
+sudo docker compose -f compose.yaml up
+```
+```https://github.com/vadimtsvetkov/shvirtd-example-python```
+
+
