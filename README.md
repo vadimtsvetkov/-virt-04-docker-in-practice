@@ -83,7 +83,7 @@ services:
 ![docker](https://github.com/vadimtsvetkov/-virt-04-docker-in-practice/blob/main/screenshots/Screenshot_4.png)
 6. (Необязательная часть) Дополнительно настройте remote ssh context к вашему серверу. Отобразите список контекстов и результат удаленного выполнения ```docker ps -a```
 7. В качестве ответа повторите  sql-запрос и приложите скриншот с данного сервера, bash-скрипт и ссылку на fork-репозиторий.
-![docker](https://github.com/vadimtsvetkov/-virt-04-docker-in-practice/blob/main/screenshots/Screenshot_5.png)
+![docker](https://github.com/vadimtsvetkov/-virt-04-docker-in-practice/blob/main/screenshots/Screenshot_5(fix).png)
 
 ```
 #!/bin/bash
