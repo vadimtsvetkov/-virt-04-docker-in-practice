@@ -27,61 +27,53 @@ CMD ["python", "main.py"]
 
 ```compose.yaml```
 ```
-version: '3.7'                              
-include:                                    
-  - proxy.yaml                              
-                                            
-services:                                   
-                                            
-  db:                                       
-    image: mysql:8                          
-    command: --default-authentication-plugin
-    restart: on-failure                          
-    environment:                            
-      MYSQL_ROOT_PASSWORD: 12345            
-      MYSQL_DATABASE: db1                   
-      MYSQL_USER: user                      
-      MYSQL_PASSWORD: 12345         
-    volumes:                                
-      - ./docker_volumes/mysql:/var/lib/mysq
-    networks:                               
-      backend:                              
-        ipv4_address: 172.20.0.10           
-                                            
-  web:                                      
-    build:                                  
-          dockerfile: Dockerfile.python     
-    restart: on-failure                     
-    environment:                            
-      - DB_HOST=172.20.0.10                 
-      - DB_TABLE=requests                   
-      - DB_USER=root                        
-      - DB_NAME=db1                         
-      - DB_PASSWORD=12345                   
-    depends_on:                             
-      - db                                  
-    ports:                                  
-      - 5000:5000                           
-    networks:                               
-      backend:                              
-        ipv4_address: 172.20.0.5            
-                                            
-networks:                                   
-  backend:                                  
-    driver: bridge                          
-    ipam:                                   
-      config:                               
-      - subnet: 172.20.0.0/24
+version: '3.7'
+include:
+  - proxy.yaml
+
+volumes:
+  db_mysql:
+
+services:
+
+  db:
+    image: mysql:8
+    restart: on-failure
+    env_file:
+      - .env
+    volumes:
+      - /var/lib/docker/volumes/db_mysql/_data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    networks:
+      backend:
+        ipv4_address: 172.20.0.10
+
+  web:
+    build:
+          dockerfile: Dockerfile.python
+    restart: on-failure
+    environment:
+      - DB_HOST=db
+      - DB_TABLE=requests
+      - DB_USER=test_user
+      - DB_NAME=test_db
+      - DB_PASSWORD=test_password
+    depends_on:
+      - db
+    networks:
+      backend:
+        ipv4_address: 172.20.0.5
 ```
 2. Запустите проект локально с помощью docker compose , добейтесь его стабильной работы: команда ```curl -L http://127.0.0.1:8090``` должна возвращать в качестве ответа время и локальный IP-адрес. Если сервисы не стартуют воспользуйтесь командами: ```docker ps -a ``` и ```docker logs <container_name>```
 
-![docker](https://github.com/vadimtsvetkov/-virt-04-docker-in-practice/blob/main/screenshots/Screenshot_2.png)
+![docker](https://github.com/vadimtsvetkov/-virt-04-docker-in-practice/blob/main/screenshots/Screenshot_2(fix).png)
 
 5. Подключитесь к БД mysql с помощью команды ```docker exec <имя_контейнера> mysql -uroot -p<пароль root-пользователя>``` . Введите последовательно команды (не забываем в конце символ ; ): ```show databases; use <имя вашей базы данных(по-умолчанию example)>; show tables; SELECT * from requests LIMIT 10;```.
 
 6. Остановите проект. В качестве ответа приложите скриншот sql-запроса.
 
-![docker](https://github.com/vadimtsvetkov/-virt-04-docker-in-practice/blob/main/screenshots/Screenshot_3.png)
+![docker](https://github.com/vadimtsvetkov/-virt-04-docker-in-practice/blob/main/screenshots/Screenshot_3(fix).png)
 
 ## Задача 4
 1. Запустите в Yandex Cloud ВМ (вам хватит 2 Гб Ram).
